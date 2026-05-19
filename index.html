@@ -133,7 +133,7 @@
             overflow: hidden; 
         }
 
-        /* CANVAS AREA - Made to dominate the space */
+        /* CANVAS AREA - The gray outer viewport */
         .canvas-area {
             flex: 1;
             display: flex;
@@ -141,15 +141,29 @@
             justify-content: center;
             padding: 20px;
             background: #dfe6e9;
-            overflow: auto;
+            overflow: auto; /* Allows panning/scrolling when zoomed */
         }
+        
+        /* CANVAS CONTAINER - The white card directly behind the image */
         .canvas-container { 
             background: white; 
             border-radius: 8px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
             line-height: 0;
-            max-width: 100%; /* Keeps container bound to screen width */
+            display: inline-block; /* Crucial: Shrinks tightly to fit the canvas base size */
+            position: relative;
         }
+        
+        canvas { 
+            display: block;
+            max-width: 100%; 
+            max-height: 80vh; 
+            border-radius: 8px; 
+            touch-action: none;
+            cursor: crosshair;
+            transition: transform 0.1s ease-out; /* Keeps the zoom adjustment feeling silky smooth */
+        }
+        
         canvas { 
             max-width: 100%; 
             max-height: 70vh; /* Prevents blowing past vertical screen space */
@@ -509,13 +523,15 @@
         });
 
         const zoomSlider = document.getElementById('zoomLevel');
-        zoomSlider.oninput = (e) => {
-            const scale = e.target.value;
-            canvas.style.transformOrigin = '0 0'; 
-            canvas.style.transform = `scale(${scale})`;
-            canvas.parentElement.style.width = (canvas.width * scale) + 'px';
-            canvas.parentElement.style.height = (canvas.height * scale) + 'px';
-        };
+zoomSlider.oninput = (e) => {
+    const scale = e.target.value;
+    
+    // Smoothly scale the canvas from the center top
+    canvas.style.transformOrigin = 'center top'; 
+    canvas.style.transform = `scale(${scale})`;
+    
+    // REMOVED the manual parent element pixel sizing lines!
+};
 
         document.getElementById('upload').onchange = function(e) {
             const reader = new FileReader();
