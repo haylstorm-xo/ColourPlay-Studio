@@ -521,10 +521,16 @@
             </div>
             
             <div class="tool-section">
-                <span class="slider-label">Palette</span>
-                <div id="palette"></div>
-                <input type="color" id="customColor" value="#ff9999" style="width:100%; height:35px; border-radius:8px; border:1px solid var(--border); background:none; cursor:pointer; padding: 0;">
-            </div>
+    <span class="slider-label">Palette</span>
+    <div id="palette"></div>
+    
+    <input type="color" id="customColor" value="#ff9999" style="width:100%; height:35px; border-radius:8px; border:1px solid var(--border); background:none; cursor:pointer; padding: 0;">
+    
+    <div id="recent-shades-container" style="margin-top: 10px; display: none; align-items: center; gap: 8px;">
+        <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Recent:</span>
+        <div id="recent-shades" style="display: flex; gap: 8px;"></div>
+    </div>
+</div>
 
             <div class="tool-section">
                 <span class="slider-label">Zoom</span>
@@ -577,6 +583,65 @@
             '#ffadad', '#ffd6a5', '#fdffb6', '#caffbf', '#9bf6ff', '#a2d2ff', '#bdb2ff',
             '#f5ebe0', '#e3d5ca', '#d5bdaf', '#8d99ae', '#4a4e69', '#2d3436', '#636e72'
         ];
+
+        // Array to hold up to 2 recently used custom colors
+let recentColors = [];
+
+// Watch the custom color picker for changes
+document.getElementById('customColor').onchange = (e) => {
+    const chosenColor = e.target.value;
+    
+    // Only save it to history if it's not already the most recent color
+    if (recentColors[0] !== chosenColor) {
+        // Add new color to the beginning of the list
+        recentColors.unshift(chosenColor);
+        
+        // Trim the list so it strictly only holds the last 2 colors
+        if (recentColors.length > 2) {
+            recentColors.pop();
+        }
+        
+        // Re-render the tiny recent swatches panel
+        updateRecentShadesUI();
+    }
+    
+    // Select the color immediately for use
+    selectColor(chosenColor);
+};
+
+function updateRecentShadesUI() {
+    const container = document.getElementById('recent-shades-container');
+    const shelf = document.getElementById('recent-shades');
+    
+    // Clear out the previous state
+    shelf.innerHTML = '';
+    
+    if (recentColors.length === 0) {
+        container.style.display = 'none';
+        return;
+    }
+    
+    // Make the panel visible now that there are colors to show
+    container.style.display = 'flex';
+    
+    // Loop through our history array and build the little circles
+    recentColors.forEach(color => {
+        const circle = document.createElement('div');
+        circle.className = 'swatch';
+        // Give it a slightly smaller footprint so it stays secondary to the main grid
+        circle.style.width = '24px';
+        circle.style.height = '24px';
+        circle.style.backgroundColor = color;
+        circle.style.cursor = 'pointer';
+        circle.style.borderRadius = '50%';
+        circle.style.border = '1px solid rgba(0,0,0,0.1)';
+        
+        // Tapping the recent circle loads it right back into active use
+        circle.onclick = () => selectColor(color);
+        
+        shelf.appendChild(circle);
+    });
+}
         
         const palette = document.getElementById('palette');
         colors.forEach(c => {
