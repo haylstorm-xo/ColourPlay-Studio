@@ -486,6 +486,34 @@
             -webkit-text-fill-color: transparent;
             display: inline-block;
         }
+
+/* SIDEBAR FOOTER CREDIT */
+.sidebar-footer {
+    margin-top: auto; /* Pushes the credit to the absolute bottom of the sidebar */
+    padding-top: 15px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-light);
+    text-align: center;
+    line-height: 1.5;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-footer .designer-credit {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* 📱 Mobile adjustment so it doesn't crowd the tools */
+@media (max-width: 768px) {
+    .sidebar-footer {
+        margin-top: 10px;
+        padding-top: 8px;
+        width: 100%;
+        border-top: 1px dashed var(--border);
+    }
+}
     </style>
 </head>
     
@@ -554,6 +582,11 @@
             <div class="tool-section">
                 <span class="slider-label">Zoom</span>
                 <input type="range" id="zoomLevel" min="1" max="4" step="0.1" value="1">
+            </div>
+
+            <div class="sidebar-footer">
+                © 2026 ColourPlay Studio <br>
+                <span class="designer-credit">Made with 🤍 by The Seer</span>
             </div>
         </div>
 
