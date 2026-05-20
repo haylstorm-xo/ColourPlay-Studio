@@ -561,6 +561,15 @@
                 <span class="slider-label">Zoom</span>
                 <input type="range" id="zoomLevel" min="1" max="4" step="0.1" value="1">
             </div>
+
+            <div class="tool-section" style="margin-top: 10px; border-top: 1px solid var(--border); padding-top: 15px;">
+                <span class="slider-label">Local Draft</span>
+                <div class="tool-grid">
+                    <button id="btn-save-draft" onclick="saveDraft()">💾 Save</button>
+                    <button id="btn-load-draft" onclick="loadDraft()" style="opacity: 0.5; cursor: not-allowed;" disabled>📂 Load</button>
+                </div>
+                <span id="draft-status" style="font-size: 10px; color: var(--text-muted); display: block; text-align: center; margin-top: 6px; font-style: italic;">No saved draft found</span>
+            </div>
         </div>
 
         <div class="canvas-area">
@@ -865,6 +874,89 @@ zoomSlider.oninput = (e) => {
         window.addEventListener('DOMContentLoaded', () => {
             loadTemplate('images/LOL.PNG');
         });
+
+        // --- 💾 LOCAL STORAGE DRAFT SYSTEMS ---
+
+// This checks if a draft already exists when the page first loads
+window.addEventListener('DOMContentLoaded', () => {
+    checkExistingDraft();
+});
+
+function saveDraft() {
+    try {
+        // Convert the current canvas image data into a compact text string
+        const canvasDataUrl = canvas.toDataURL('image/png');
+        
+        // Save it into the browser's private local storage locker
+        localStorage.setItem('colourplay_canvas_draft', canvasDataUrl);
+        
+        // Provide gentle visual feedback that it worked
+        const statusText = document.getElementById('draft-status');
+        statusText.innerText = "Draft saved successfully!";
+        statusText.style.color = "#2ecc71"; // Success green
+        
+        // Re-check the draft state to light up the load button
+        checkExistingDraft();
+        
+        // Reset the text back to normal after 3 seconds
+        setTimeout(() => {
+            statusText.innerText = "Draft stored safely on device";
+            statusText.style.color = "var(--text-muted)";
+        }, 3000);
+
+    } catch (err) {
+        alert("Could not save draft locally. Make sure cookies/local storage aren't fully blocked!");
+        console.error(err);
+    }
+}
+
+function loadDraft() {
+    const savedData = localStorage.getItem('colourplay_canvas_draft');
+    
+    if (savedData) {
+        // Push the current pristine or old state to the undo stack before replacing it
+        saveState(); 
+        
+        const img = new Image();
+        img.onload = () => {
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+            
+            const statusText = document.getElementById('draft-status');
+            statusText.innerText = "Draft loaded!";
+            
+            setTimeout(() => {
+                statusText.innerText = "Draft stored safely on device";
+            }, 2000);
+        };
+        img.src = savedData;
+    }
+}
+
+function checkExistingDraft() {
+    const loadBtn = document.getElementById('btn-load-draft');
+    const statusText = document.getElementById('draft-status');
+    const hasDraft = localStorage.getItem('colourplay_canvas_draft');
+    
+    if (hasDraft) {
+        // Light up the load button and make it clickable
+        loadBtn.removeAttribute('disabled');
+        loadBtn.style.opacity = '1';
+        loadBtn.style.cursor = 'pointer';
+        loadBtn.style.background = 'var(--warning)'; // Uses your lovely soft orange theme color
+        loadBtn.style.color = 'white';
+        statusText.innerText = "Draft stored safely on device";
+    } else {
+        // Keep it greyed out if memory is empty
+        loadBtn.setAttribute('disabled', 'true');
+        loadBtn.style.opacity = '0.5';
+        loadBtn.style.cursor = 'not-allowed';
+        loadBtn.style.background = '#f1f2f6';
+        loadBtn.style.color = 'var(--text-muted)';
+        statusText.innerText = "No saved draft found";
+    }
+}
     </script>
 </body>
 </html>
