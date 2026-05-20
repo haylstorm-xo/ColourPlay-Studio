@@ -222,6 +222,48 @@
             box-shadow: 0 0 0 2px white, 0 2px 8px rgba(0,0,0,0.2);
         }
 
+        /* CUSTOM COLOR PICKER STYLE - Clean Circular Redesign */
+        .color-picker-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        input[type="color"]#customColor {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: 2px dashed var(--text-light);
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        input[type="color"]#customColor:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        /* Core custom picker internal styling overrides */
+        input[type="color"]#customColor::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type="color"]#customColor::-webkit-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+        input[type="color"]#customColor::-moz-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+
         /* BUTTON STYLING */
         .btn-group { display: flex; gap: 8px; align-items: center; }
 
@@ -369,6 +411,18 @@
             
             .swatch.active { transform: scale(1.1); }
 
+            /* Match custom picker sizing for mobile grid layout flow */
+            input[type="color"]#customColor {
+                width: 42px;
+                height: 42px;
+            }
+
+            .color-picker-wrapper {
+                width: auto;
+                margin-top: 0;
+                display: inline-flex;
+            }
+
             .right-sidebar {
                 order: 3;
                 width: 100%;
@@ -487,7 +541,9 @@
                 <span class="slider-label">Palette</span>
                 <div id="palette"></div>
                 
-                <input type="color" id="customColor" value="#ff9999" style="width:100%; height:35px; border-radius:8px; border:1px solid var(--border); background:none; cursor:pointer; padding: 0;">
+                <div class="color-picker-wrapper">
+                    <input type="color" id="customColor" value="#ff9999" title="Choose custom shade">
+                </div>
                 
                 <div id="recent-shades-container" style="margin-top: 10px; display: none; align-items: center; gap: 8px;">
                     <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Recent:</span>
