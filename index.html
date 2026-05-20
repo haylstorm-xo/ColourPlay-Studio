@@ -713,23 +713,20 @@
             document.getElementById('customColor').value = color;
         }
 
-        function setTool(tool) {
+function setTool(tool) {
     currentTool = tool;
     document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('tool-active'));
     document.getElementById(`btn-${tool}`).classList.add('tool-active');
     
-    // Define custom emoji cursors based on the active tool
+    // Smooth, standard system pointers for precision
     if (tool === 'fill') {
-        // Basket/Bucket emoji (Hotspot at the bottom left where the fill pours out)
-        canvas.style.cursor = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='font-size:24px'><text y='24' x='0'>🧺</text></svg>") 0 24, cell`;
+        canvas.style.cursor = 'cell';       // A clean, thick targeting crosshair perfect for filling spaces
     } 
     else if (tool === 'brush') {
-        // Paintbrush emoji (Hotspot at the bottom left tip of the brush)
-        canvas.style.cursor = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='font-size:24px'><text y='24' x='0'>🖌️</text></svg>") 0 24, crosshair`;
+        canvas.style.cursor = 'crosshair';  // A classic precision fine-line crosshair for drawing
     } 
     else if (tool === 'erase') {
-        // Sponge/Eraser emoji (Hotspot centered)
-        canvas.style.cursor = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='font-size:24px'><text y='24' x='4'>🧽</text></svg>") 12 12, help`;
+        canvas.style.cursor = 'pointer';    // The standard hand pointer so it feels like a physical tool selection
     }
 }
 
